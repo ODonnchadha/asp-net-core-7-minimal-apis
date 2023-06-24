@@ -100,9 +100,31 @@
               - Third party. e.g.: FluentValidation.
 
 - STRUCTURING YOUR MINIMAL API:
-    - 
+    - Options: 
+        1. Using methods instead on lnline handlers. Improves maintainability and testability.
+        2. Variation. Seperate out to another class. e.g.:
+        ```csharp
+            public static class Handler
+            {
+                public static async Task<Ok<IEnumerable<DTO>>> GetAsync();
+            }
+        ```
+        3. Extending IEndpontRouteBuilder
+        ```csharp
+            public static class EndpointRouteBuilderExtensions
+            {
+                public static void RegisterEndpoints(this IEndpontRouteBuilder app)
+                {
+                    var endpoints = app.MapGroup("/url");
+                    endpoints.MapGet("", async Task<Ok<IEnumerable<DTO>>> GetAsync());
+                }
+            }
+        ```
+        4. Third-party: e.g.: Carter.
 
 - HANDLING EXCEPTIONS AND LOGGING:
+    - 
+    
 - IMPPEMENTING BUSINESS LOGIC WITH ENDPOINT FILTERS:
 - SECURING YOUR MINIMAL API:
 - DOCUMENTING YOUR MINIMAL API:
