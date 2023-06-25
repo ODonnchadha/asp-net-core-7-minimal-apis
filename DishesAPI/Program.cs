@@ -4,32 +4,52 @@ using DishesAPI.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DishesDbContext>(o => o.UseSqlite(
-    builder.Configuration["ConnectionStrings:ConnectionString"]));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddDbContext<DishesDbContext>(o => o.UseSqlite(
+    builder.Configuration["ConnectionStrings:X"]));
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler();
+
+    //app.UseExceptionHandler(builder =>
+    //{
+    //    builder.Run(async context =>
+    //    {
+    //        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+    //        context.Response.ContentType = "text/html";
+    //        await context.Response.WriteAsync("An error has occured.");
+    //    });
+    //});
+}
 
 app.UseHttpsRedirection();
 app.RegisterDishEndpoints();
 app.RegisterIngredientEndpoints();
 
 app.MapPut("dishes/{id:guid}", async Task<Results<NotFound, NoContent>> (Guid id, 
-    [FromBody] DishesAPI.Models.DishForUpdate model, DishesDbContext context, IMapper mapper) =>
+    [FromBody]DishesAPI.Models.DishForUpdate model, 
+    DishesDbContext context, 
+    ILogger<DishesAPI.Models.Dish> logger,
+    IMapper mapper) =>
     {
         var entity = await context.Dishes.FirstOrDefaultAsync(d => d.Id == id);
 
         if (entity == null)
         {
+            logger.LogInformation($"Dish Id {id} was not found.");
             return TypedResults.NotFound();
         }
 
-        // Override values in the destinbation object by those in the source object.
+        // NOTE: Override values in the destinbation object by those in the source object.
         mapper.Map(model, entity);
-
         await context.SaveChangesAsync();
 
         return TypedResults.NoContent();

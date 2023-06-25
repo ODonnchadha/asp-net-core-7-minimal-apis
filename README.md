@@ -123,8 +123,26 @@
         4. Third-party: e.g.: Carter.
 
 - HANDLING EXCEPTIONS AND LOGGING:
-    - 
+    - Exception handling:
+        - Developer exception page middleware. Exposes stack traces for unhandled exceptions. Developing/integration.
+            - Enabled by default in development and app is set up with a call into WebApplication.CreateBuilder.
+        - Exception handler middleware: Error payload without stack trace. Avoid in development. Logs exceptions.
+            - Not enabled by default. Use app.UseExceptionHandler.
+        - Improving error responses with problem details:
+            ```csharp
+                builder.Services.AddProblemDetails() : IProblemDetailsService
+            ```
+            - Developer exception page middleware will automatically generate a problem/details response.
+                - As will exception handler middleware. 
+                - And status code page middleware can be configured to generate problem details responses for empty bodies. e.g.: 400, 404.
+    - Logging:
+        - Same as ASP.NET Core. Default. Inject.
     
 - IMPPEMENTING BUSINESS LOGIC WITH ENDPOINT FILTERS:
+    - Filters for minimal APIs. Comparison to ASAP.NET Core MVC filters. Common scenarios.
+
 - SECURING YOUR MINIMAL API:
+    - y.
+
 - DOCUMENTING YOUR MINIMAL API:
+    - z.
