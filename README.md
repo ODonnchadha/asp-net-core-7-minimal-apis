@@ -140,6 +140,27 @@
     
 - IMPPEMENTING BUSINESS LOGIC WITH ENDPOINT FILTERS:
     - Filters for minimal APIs. Comparison to ASAP.NET Core MVC filters. Common scenarios.
+    - A pipeline of filters that runs after MVC has selected the action to execute.
+        - These filters allow you to run code before or after specific stages in the request processing pipeline.
+            01. Authorization filters.
+            02. Resource filters.
+            03. (Model binding.)
+            04. Action filters.
+            05. (Action.)
+            06. Exception filters.
+            07. Result filters.
+            08. (Result executes.) 
+            09. Result filters.
+            10. Resource filters.
+        - There is no comparable filter pipeline for minimal APIs.
+            - As an alternative, endpoint filters are supported. 
+                - Not as extensive. Running code before/after endpoint handler.
+                - Inspecting/modifying parameters provided during endpoint handler invocation.
+                - Intercepting the response behavior of an endpoint handler.
+            - e.g.: Logging request/response information. Transforming the request/response. 
+            - (Dis)allowing a request. Validating the incoming request.
+        - A request travels down the list of endpoint filters and then back up again in reverse order.
+            - The order in which filters are added is inportant! Filters can short-circuit the pipeline.
 
 - SECURING YOUR MINIMAL API:
     - y.
