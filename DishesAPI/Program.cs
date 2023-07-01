@@ -34,27 +34,6 @@ app.UseHttpsRedirection();
 app.RegisterDishEndpoints();
 app.RegisterIngredientEndpoints();
 
-app.MapPut("dishes/{id:guid}", async Task<Results<NotFound, NoContent>> (Guid id, 
-    [FromBody]DishesAPI.Models.DishForUpdate model, 
-    DishesDbContext context, 
-    ILogger<DishesAPI.Models.Dish> logger,
-    IMapper mapper) =>
-    {
-        var entity = await context.Dishes.FirstOrDefaultAsync(d => d.Id == id);
-
-        if (entity == null)
-        {
-            logger.LogInformation($"Dish Id {id} was not found.");
-            return TypedResults.NotFound();
-        }
-
-        // NOTE: Override values in the destinbation object by those in the source object.
-        mapper.Map(model, entity);
-        await context.SaveChangesAsync();
-
-        return TypedResults.NoContent();
-    });
-
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 using (var scope = app.Services.GetService<IServiceScopeFactory>().CreateScope())
 {

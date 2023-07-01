@@ -69,5 +69,24 @@
 
             return TypedResults.Ok(mapper.Map<Models.Dish>(entity));
         }
+
+        public static async Task<Results<NotFound, NoContent>> UpdateDishAsync(
+            Guid id, Models.DishForUpdate model, DishesDbContext context, 
+            ILogger<Models.Dish> logger, IMapper mapper)
+        {
+            var entity = await context.Dishes.FirstOrDefaultAsync(d => d.Id == id);
+
+            if (entity == null)
+            {
+                logger.LogInformation($"Dish Id {id} was not found.");
+                return TypedResults.NotFound();
+            }
+
+            // NOTE: Override values in the destinbation object by those in the source object.
+            mapper.Map(model, entity);
+            await context.SaveChangesAsync();
+
+            return TypedResults.NoContent();
+        }
     }
 }

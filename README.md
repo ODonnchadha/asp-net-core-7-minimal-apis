@@ -161,7 +161,7 @@
             - (Dis)allowing a request. Validating the incoming request.
         - A request travels down the list of endpoint filters and then back up again in reverse order.
             - The order in which filters are added is inportant! Filters can short-circuit the pipeline.
-
+        - Validation annotations are ignored. Third party: MiniValidation.
 - SECURING YOUR MINIMAL API:
     - y.
 
