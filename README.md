@@ -162,8 +162,42 @@
         - A request travels down the list of endpoint filters and then back up again in reverse order.
             - The order in which filters are added is inportant! Filters can short-circuit the pipeline.
         - Validation annotations are ignored. Third party: MiniValidation.
+
 - SECURING YOUR MINIMAL API:
-    - y.
+    - Token-based security.
+        - Application-level and/or infrastructure level?
+        - Same domain or cross-domain?
+        - Local or centralized users and credentials?
+        - Authentication and/or authorization?
+    - Component that generates and provides tokens. Component that requests a token, Component that requires and validates the token.
+        - JWTs. "aud" "role" "exp"
+        - Our API validates a token. It does not generate it. It does not provide it.
+    - Authentication: The process of determining whether someone or something is who or what it says it is.
+        - Authentication: The token contains verifiable information on whom or what is accessing it.
+        - Delegation: The token allows access on behalf of a user or application.
+        ```csharp
+            public interface IAuthenticationService {  };
+            builder.Services.AddAuthentication().AddJwtBearer();
+            public interface IAuthorizationService {  };
+            builder.Services.AddAuthorizatio();
+            var endpoint = endpointRouteBuilder.MapGroup("/dishes/{id:guid}/ingredients").RequireAuthorization();
+        ```
+        - Add/configure authentication services. Tie authentication to the JWT authentication handler.
+        - Authorization: The process of determining what someone or something is allowed to do.
+        - Generating a token: Manually generate:
+            - /login endpoint. Use only for simple use cases.
+            - OAuth2 and OpenID COnnect are standardized protocols for token-based security. "Token-based security on steroids."
+            - Centralized identity providers implement these & generate tokens:
+                - Azure AD, IndeitiyServer, Auth0.
+            - NOTE: Our API validates a token. It does not: (1) Generate it. (2) Provide it.
+            - .NET Core includes a built-in tool to generate tokens which can be used for develpment.
+                ```javascript
+                    dotnet-user-jwts
+                    dotnet user-jwts create --audience menu-api
+                    dotnet user-jwts create --audience menu-api --claim city=Duluth --role admin
+                    dotnet user-jwts print TOKEN_ID
+                ```
+            - Creating and applying an authorization policy:
 
 - DOCUMENTING YOUR MINIMAL API:
-    - z.
+    - TODO:

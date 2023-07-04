@@ -6,7 +6,7 @@
     {
         public static void RegisterDishEndpoints(this IEndpointRouteBuilder builder)
         {
-            var endpoint = builder.MapGroup("/dishes");
+            var endpoint = builder.MapGroup("/dishes").RequireAuthorization();
             var FISH_MASALA = new Guid("98929bd4-f099-41eb-a994-f1918b724b5a");
 
             endpoint.MapDelete("/{id:guid}", DishHandler.DeleteDishByIdAsync)
@@ -15,10 +15,11 @@
 
             endpoint.MapGet("", DishHandler.GetDishesAsync);
             endpoint.MapGet("/{id:guid}", DishHandler.GetDishByIdAsync).WithName("GetDish");
-            endpoint.MapGet("/dishes/{name}", DishHandler.GetDishByNameAsync);
+            endpoint.MapGet("/{name}", DishHandler.GetDishByNameAsync).AllowAnonymous();
 
             endpoint.MapPost("", DishHandler.CreateDishAsync)
-                .AddEndpointFilter<ValidateAnnotationsFilter>(); ;
+                .AddEndpointFilter<ValidateAnnotationsFilter>()
+                .RequireAuthorization("DULUTH_AUTHORIZATION_POLICY");
 
             endpoint.MapPut("/{id:guid}", DishHandler.UpdateDishAsync)
                 .AddEndpointFilter(new DishIsLockedFilter(new(FISH_MASALA.ToString())));

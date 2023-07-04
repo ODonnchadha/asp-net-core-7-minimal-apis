@@ -1,8 +1,5 @@
-using AutoMapper;
 using DishesAPI.DbContexts;
 using DishesAPI.Extensions;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -11,6 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<DishesDbContext>(o => o.UseSqlite(
     builder.Configuration["ConnectionStrings:X"]));
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder().AddPolicy(
+    "DULUTH_AUTHORIZATION_POLICY", policy =>
+{
+    policy.RequireRole("admin").RequireClaim("city", "Duluth");
+});
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
@@ -18,7 +22,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler();
-
     //app.UseExceptionHandler(builder =>
     //{
     //    builder.Run(async context =>
@@ -31,6 +34,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.RegisterDishEndpoints();
 app.RegisterIngredientEndpoints();
 
