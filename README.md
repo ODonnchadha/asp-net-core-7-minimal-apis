@@ -200,4 +200,14 @@
             - Creating and applying an authorization policy:
 
 - DOCUMENTING YOUR MINIMAL API:
-    - TODO:
+    - Swagger and OpenAPI: Driven by, or generated from, an OpenAPI specification:
+        - A programming language-agnostic standard for documenting HTTP APIs.
+        - Generated from this? Tests. Client-side DTOs.
+        - Most common: Swashbuckle. Inspects your API and generates a specification from it.
+            - Swashbuckle UI wraps swagger-ui, a documentation interface.
+        - Support for improving the OpenAPI spcification is provided via:
+            ```csharp
+                Microsoft.AspNetCore.OpenApi
+            ```
+        - "/swagger/index.html" (by default.)
+        - "/swagger/v1/swagger.json" (specification.)

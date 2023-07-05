@@ -15,6 +15,8 @@ builder.Services.AddAuthorizationBuilder().AddPolicy(
 {
     policy.RequireRole("admin").RequireClaim("city", "Duluth");
 });
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
@@ -36,6 +38,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSwagger();
+app.UseSwaggerUI();
 app.RegisterDishEndpoints();
 app.RegisterIngredientEndpoints();
 

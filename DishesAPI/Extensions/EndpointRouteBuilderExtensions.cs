@@ -14,7 +14,11 @@
                 .AddEndpointFilter<LogNotFoundResponseFilter>();
 
             endpoint.MapGet("", DishHandler.GetDishesAsync);
-            endpoint.MapGet("/{id:guid}", DishHandler.GetDishByIdAsync).WithName("GetDish");
+            endpoint.MapGet("/{id:guid}", DishHandler.GetDishByIdAsync)
+                .WithName("GetDish")
+                .WithOpenApi()
+                .WithSummary("GET a DISH by providing an ID.")
+                .WithDescription("DISHES are identified by a URL containing a DISH identifier. This identifier is a GUID. You can GET one specific DISH via this ENDPOINT by providing its identifier.");
             endpoint.MapGet("/{name}", DishHandler.GetDishByNameAsync).AllowAnonymous();
 
             endpoint.MapPost("", DishHandler.CreateDishAsync)
