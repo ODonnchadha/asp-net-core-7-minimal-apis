@@ -2,6 +2,8 @@ using DishesAPI.DbContexts;
 using DishesAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.OpenApi.Models;
+using System.Security.Cryptography.Xml;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,33 @@ builder.Services.AddAuthorizationBuilder().AddPolicy(
     policy.RequireRole("admin").RequireClaim("city", "Duluth");
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var ID = "BEARER_TOKEN_AUTHORIZATION";
+    options.AddSecurityDefinition(ID,
+        new()
+        {
+            // Name *must* match the name of the header.
+            Name = "Authorization",
+            Description = "Token-based authentication and authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            In = ParameterLocation.Header
+        });
+    options.AddSecurityRequirement(new()
+        {
+            {
+                new()
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = ID
+                    }
+                }, new List<string>()
+            }
+        });
+    });
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();

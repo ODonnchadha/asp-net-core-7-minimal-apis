@@ -2,6 +2,8 @@
 {
     using DishesAPI.EndpointFilters;
     using DishesAPI.EndpointHandlers;
+    using DishesAPI.Models;
+
     public static class EndpointRouteBuilderExtensions
     {
         public static void RegisterDishEndpoints(this IEndpointRouteBuilder builder)
@@ -14,15 +16,26 @@
                 .AddEndpointFilter<LogNotFoundResponseFilter>();
 
             endpoint.MapGet("", DishHandler.GetDishesAsync);
+
             endpoint.MapGet("/{id:guid}", DishHandler.GetDishByIdAsync)
                 .WithName("GetDish")
                 .WithOpenApi()
                 .WithSummary("GET a DISH by providing an ID.")
                 .WithDescription("DISHES are identified by a URL containing a DISH identifier. This identifier is a GUID. You can GET one specific DISH via this ENDPOINT by providing its identifier.");
-            endpoint.MapGet("/{name}", DishHandler.GetDishByNameAsync).AllowAnonymous();
+
+            endpoint.MapGet("/{name}", DishHandler.GetDishByNameAsync)
+                .WithOpenApi(operation =>
+                {
+                    operation.Deprecated = true;
+                    return operation;
+                })
+                .AllowAnonymous();
 
             endpoint.MapPost("", DishHandler.CreateDishAsync)
                 .AddEndpointFilter<ValidateAnnotationsFilter>()
+                .ProducesValidationProblem(400)
+                .Accepts<DishForCreation>(
+                "application/json", "application/vnd.marvin.dishforcreation+json")
                 .RequireAuthorization("DULUTH_AUTHORIZATION_POLICY");
 
             endpoint.MapPut("/{id:guid}", DishHandler.UpdateDishAsync)

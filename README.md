@@ -211,3 +211,5 @@
             ```
         - "/swagger/index.html" (by default.)
         - "/swagger/v1/swagger.json" (specification.)
+    - Describing response types and status codes. TypedResults (versus Results) produces beter documentation.
+    - Request: Body. Headers. Cookies.

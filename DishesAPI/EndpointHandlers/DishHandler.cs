@@ -3,6 +3,7 @@
     using AutoMapper;
     using DishesAPI.DbContexts;
     using Microsoft.AspNetCore.Http.HttpResults;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
     public static class DishHandler
@@ -44,6 +45,7 @@
                     name)).ToListAsync()));
         }
 
+        // e.g.: [Produces()]
         public static async Task<Results<NotFound, Ok<Models.Dish>>> GetDishByIdAsync(
             Guid id, DishesDbContext context, IMapper mapper)
         {
