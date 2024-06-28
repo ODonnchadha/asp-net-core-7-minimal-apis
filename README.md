@@ -8,7 +8,7 @@
     - ASP.NET Core MVC? Model. View. Controller.
     - ASP.NET Core Minimal API?
         - Supports routing, parameter binding, basic serialization, and basic filters.
-        - Intended for lightweight scenarios without all the ceremony yhat comes with MVC.
+        - Intended for lightweight scenarios without all the ceremony that comes with MVC.
             - Microservice APIs. Aggregate/proxy APIs. Relatively small APIs.
         - External packages.
     ```javascript
